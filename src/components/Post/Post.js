@@ -48,7 +48,7 @@ export default function (props) {
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                     </Avatar>
                 }
-                title={post.name}
+                title={post.uname}
                 subheader={post.date}
             />
             <CardContent>

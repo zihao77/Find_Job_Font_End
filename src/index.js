@@ -65,7 +65,7 @@ function useRole() {
     return sessionStorage.getItem("role");
   }
 
-  const [role, setRole] = useState(getRole);
+  const [role, setRole] = useState(getRole());
 
   function saveRole(userRole) {
     sessionStorage.setItem("role", userRole);
@@ -84,7 +84,7 @@ function useUid() {
     return sessionStorage.getItem("uid");
   }
 
-  const [uid, setUid] = useState(getUid);
+  const [uid, setUid] = useState(getUid());
 
   function saveUid(userUid) {
     sessionStorage.setItem("uid", userUid);
@@ -108,10 +108,27 @@ function App() {
     console.log(role);
   })
 
-  function logout() {
-    setToken(undefined);
-    setRole(undefined);
-    setUid(undefined);
+
+
+  let logout = async () => {
+    let data = await fetch('http://3.142.51.105:5000/user/logout', {
+      method: "post",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "uid": uid,
+        "token": token
+      })
+    }).then(res => res.json())
+    console.log(data)
+    if (data["code"] == 200) {
+      setToken(undefined);
+      setRole(undefined);
+      setUid(undefined);
+    } else {
+      alert("log out fail");
+    }
   }
 
   return (
@@ -126,7 +143,7 @@ function App() {
             <Route path="/Login" element={<Login setToken={setToken} setUid={setUid} setRole={setRole} />}></Route>
             <Route path="/Regist" element={<Regist setToken={setToken} setUid={setUid} setRole={setRole} />}></Route>
             <Route path="/UserDashboard" element={<PrivateRouterUser>
-              <UserDashboard logout={logout} />
+              <UserDashboard uid={uid} token={token} logout={logout} />
             </PrivateRouterUser>}>
             </Route>
             <Route path="/Message" element={<PrivateRouterUser>
@@ -138,7 +155,7 @@ function App() {
             </PrivateRouterUser>}>
             </Route>
             <Route path="/PostMoment" element={<PrivateRouterUser>
-              <PostMoment logout={logout} />
+              <PostMoment logout={logout} uid={uid} token={token} role={role} />
             </PrivateRouterUser>}>
             </Route>
             <Route path="/JobTrack" element={<PrivateRouterUser>

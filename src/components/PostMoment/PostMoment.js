@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CardContent, Grid, TextField, Button } from "@mui/material";
 import TopNavBar from "../TopNavBar/TopNavBar";
@@ -6,13 +6,43 @@ import { Card } from "@mui/material";
 import { CardActions } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 
+async function postMoment(content) {
+    return fetch("http://3.142.51.105:5000/moment/post", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(content)
+    }).then(res => res.json());
+}
 
 export default function (props) {
+    const [content, setContent] = useState();
     let navigate = useNavigate();
 
-    useEffect(function () {
+    async function handleClickPost() {
+        let data = await postMoment({
+            "uid": props.uid,
+            "token": props.token,
+            "content": content
+        });
 
-    });
+        if (data["code"] == 200) {
+            if (props.role == 0) {
+                navigate("/UserDashboard");
+            } else {
+                navigate("/CompanyDashboard");
+            }
+        } else {
+            alert("Post fails");
+        }
+
+    }
+
+    function inputChange(e) {
+        setContent(e.target.value);
+    }
+
 
     return (
         <div>
@@ -25,10 +55,10 @@ export default function (props) {
                         <Grid item xs={6}>
                             <Card>
                                 <CardContent sx={{ height: 300 }} >
-                                    <TextField fullWidth multiline rows={10} label="Say something..." variant="filled" />
+                                    <TextField onChange={inputChange} fullWidth multiline rows={10} label="Say something..." variant="filled" />
                                 </CardContent>
                                 <CardActions>
-                                    <Button sx={{ marginLeft: "auto", marginRight: 1 }} variant="contained" endIcon={<SendIcon />}>
+                                    <Button onClick={handleClickPost} sx={{ marginLeft: "auto", marginRight: 1 }} variant="contained" endIcon={<SendIcon />}>
                                         Post
                                     </Button>
                                 </CardActions>

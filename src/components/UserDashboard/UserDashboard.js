@@ -20,8 +20,14 @@ import { PropaneSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 
 
-async function getPosts() {
-    return await fetch("http://localhost:8080/getMoments")
+async function getPosts(credentials) {
+    return await fetch("http://3.142.51.105:5000/moment/list", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+    })
         .then(res => res.json())
 }
 
@@ -30,8 +36,15 @@ export default function UserDashboard(props) {
     let navigate = useNavigate();
 
     useEffect(async () => {
-        const data = await getPosts();
-        setPosts(data);
+        console.log(props.uid);
+        console.log(props.token);
+        const data = await getPosts({
+            "uid": props.uid,
+            "token": props.token
+        });
+        setPosts({
+            "post": data["data"]
+        });
     }, []);
 
     function logout() {

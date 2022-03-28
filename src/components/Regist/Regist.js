@@ -53,10 +53,17 @@ export default function Login(props) {
             'confirm_password': confirmPassword,
             'user_type': role
         });
-        props.setToken(data["token"]);
-        props.setUid(data["uid"]);
-        props.setRole(data["user_type"]);
-        navigate("/UserDashboard", { replace: true });
+
+
+
+        if (data["code"] == 200) {
+            props.setToken(data["data"]["token"]);
+            props.setUid(data["data"]["uid"]);
+            props.setRole(data["data"]["user_type"]);
+            navigate("/UserDashboard", { replace: true });
+        } else {
+            alert("Register fail");
+        }
     }
 
     return (
@@ -86,10 +93,10 @@ export default function Login(props) {
                             <TextField fullWidth label="Username*" variant="outlined" onChange={handleUsernameChange} value={username} />
                         </Grid>
                         <Grid item xs={12} sx={{ marginBottom: 1 }}>
-                            <TextField fullWidth id="filled-basic" label="Password*" type="password" variant="outlined" onChange={handlePasswordChange} value={password} />
+                            <TextField fullWidth label="Password*" type="password" variant="outlined" onChange={handlePasswordChange} value={password} />
                         </Grid>
                         <Grid item xs={12} sx={{ marginBottom: 1 }}>
-                            <TextField fullWidth id="filled-basic" label="Confirm Password*" type="password" variant="outlined" onChange={handleConfirmPasswordChange} value={confirmPassword} />
+                            <TextField fullWidth label="Confirm Password*" type="password" variant="outlined" onChange={handleConfirmPasswordChange} value={confirmPassword} />
                         </Grid>
                         <Grid item xs={12} sx={{ marginBottom: 5 }}>
                             <FormControl fullWidth>
