@@ -19,7 +19,7 @@ import TopNavBar from "../TopNavBar/TopNavBar";
 import { PropaneSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 
-
+// Api: moment/list
 async function getPosts(credentials) {
     return await fetch("http://3.142.51.105:5000/moment/list", {
         method: 'POST',
@@ -68,7 +68,7 @@ export default function UserDashboard(props) {
     }
 
     let temp = posts["post"].map((item, key) => {
-        return (<Post key={key} posts={item} />);
+        return (<Post key={key} uid={props.uid} token={props.token} posts={item} />);
     });
 
     return (

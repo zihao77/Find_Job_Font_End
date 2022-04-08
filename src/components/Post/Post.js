@@ -15,6 +15,7 @@ import { Grid } from "@mui/material";
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import Comment from "../Comment/Comment";
+import { useNavigate } from "react-router";
 
 
 const ExpandMore = styled((props) => {
@@ -29,12 +30,47 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
+async function postComment(content) {
+    return fetch("http://3.142.51.105:5000/moment/comment", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(content)
+    }).then(res => res.json());
+}
+
 export default function (props) {
     const [expanded, setExpanded] = React.useState(false);
+    const [content, setContent] = React.useState();
+    let navigate = useNavigate();
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    async function clickPost() {
+        let data = await postComment({
+            "uid": props.uid,
+            "token": props.token,
+            "mid": props.posts.mid,
+            "content": content
+        });
+
+        if (data["code"] == 200) {
+            if (props.role == 0) {
+                navigate("/UserDashboard");
+            } else {
+                navigate("/CompanyDashboard");
+            }
+        } else {
+            alert("post fails.");
+        }
+    }
+
+    function inputChange(e) {
+        setContent(e.target.value);
+    }
 
     const post = props.posts;
     const comments = props.posts.comment.map((item, key) => {
@@ -71,10 +107,10 @@ export default function (props) {
                 <CardContent>
                     <Grid container sx={{ marginBottom: 2 }}>
                         <Grid item xs={9}>
-                            <TextField size="small" label="Say something..." fullWidth variant="outlined" />
+                            <TextField onChange={inputChange} size="small" label="Say something..." fullWidth variant="outlined" />
                         </Grid>
                         <Grid item xs={2} sx={{ marginLeft: "auto" }}>
-                            <Button fullWidth variant="outlined">Post</Button>
+                            <Button onClick={clickPost} fullWidth variant="outlined">Post</Button>
                         </Grid>
                     </Grid>
                     {comments}
