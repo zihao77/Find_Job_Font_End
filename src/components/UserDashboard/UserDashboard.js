@@ -18,6 +18,7 @@ import Divider from '@mui/material/Divider';
 import TopNavBar from "../TopNavBar/TopNavBar";
 import { PropaneSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import Pagination from '@mui/material/Pagination';
 
 // Api: moment/list
 async function getPosts(credentials) {
@@ -31,8 +32,20 @@ async function getPosts(credentials) {
         .then(res => res.json())
 }
 
+async function getNumberOfPost() {
+    return await fetch("http://3.142.51.105:5000/moment/count", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    }).then(res => res.json())
+}
+
 export default function UserDashboard(props) {
     const [posts, setPosts] = useState({ "post": [] });
+    const [numberOfMoment, setNumberOfMoment] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
     let navigate = useNavigate();
 
     useEffect(async () => {
@@ -40,12 +53,35 @@ export default function UserDashboard(props) {
         console.log(props.token);
         const data = await getPosts({
             "uid": props.uid,
-            "token": props.token
+            "token": props.token,
+            "page": 0,
+            "page_size": 5
         });
         setPosts({
             "post": data["data"]
         });
     }, []);
+
+    useEffect(async () => {
+        const data = await getNumberOfPost();
+        setNumberOfMoment(data["data"]["num"]);
+    }, [])
+
+    useEffect(() => {
+        setPageNum(Math.ceil(numberOfMoment / 5));
+    }, [numberOfMoment])
+
+    async function clickPagination(event, value) {
+        const data = await getPosts({
+            "uid": props.uid,
+            "token": props.token,
+            "page": (value - 1),
+            "page_size": 5
+        });
+        setPosts({
+            "post": data["data"]
+        });
+    }
 
     function logout() {
         props.logout();
@@ -125,9 +161,23 @@ export default function UserDashboard(props) {
                                 </Grid>
                                 {/* middle */}
                                 <Grid item xs={6}>
-                                    <Paper elevation={2}>
-                                        {posts["post"].length > 0 && temp}
-                                    </Paper>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Paper elevation={2}>
+                                                {posts["post"].length > 0 && temp}
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Grid container justifyContent="center">
+                                                <Grid item sx={{ marginTop: "10px", marginBottom: "50px" }}>
+                                                    <Pagination size="large" onChange={clickPagination} count={pageNum} shape="rounded" />
+                                                </Grid>
+
+                                            </Grid>
+                                        </Grid>
+
+                                    </Grid>
+
                                 </Grid>
                                 {/* right side */}
                                 <Grid item xs={3}>

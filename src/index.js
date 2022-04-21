@@ -151,7 +151,7 @@ function App() {
             </PrivateRouterUser>}>
             </Route>
             <Route path="/JobMarket" element={<PrivateRouterUser>
-              <JobMarket logout={logout} />
+              <JobMarket logout={logout} uid={uid} token={token} />
             </PrivateRouterUser>}>
             </Route>
             <Route path="/PostMoment" element={<PrivateRouterUser>
@@ -159,7 +159,7 @@ function App() {
             </PrivateRouterUser>}>
             </Route>
             <Route path="/JobTrack" element={<PrivateRouterUser>
-              <JobTrack logout={logout} />
+              <JobTrack logout={logout} uid={uid} token={token} />
             </PrivateRouterUser>}>
             </Route>
             <Route path="/CompanyDashboard" element={<PrivateRouterCompany>
