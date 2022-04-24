@@ -10,6 +10,10 @@ import JobTrack from './components/JobTrack/JobTrack';
 import PostMoment from './components/PostMoment/PostMoment'
 import UserDashboard from './components/UserDashboard/UserDashboard';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard'
+import IndividualProfile from './components/IndividualProfile/IndividualProfile';
+import AddWork from './components/Experience/AddWork';
+import UpdateWork from './components/Experience/UpdateWork';
+import AddStudy from './components/Experience/AddStudy';
 
 const AuthContext = React.createContext(null);
 
@@ -36,6 +40,14 @@ function PrivateRouterCompany(props) {
     return <Navigate to='/UserDashboard' replace={true}></Navigate>
   }
 
+  return props.children;
+}
+
+function PrivateRouter(props) {
+  const data = useContext(AuthContext);
+  if (!data.token) {
+    return <Navigate to='/Login' replace={true}></Navigate>
+  }
   return props.children;
 }
 
@@ -111,7 +123,7 @@ function App() {
 
 
   let logout = async () => {
-    let data = await fetch('http://3.142.51.105:5000/user/logout', {
+    let data = await fetch('http://18.117.128.141:5000/user/logout', {
       method: "post",
       headers: {
         'Content-Type': 'application/json'
@@ -140,30 +152,48 @@ function App() {
       }}>
         <BrowserRouter>
           <Routes>
+            <Route path="/PostMoment" element={<PrivateRouter>
+              <PostMoment logout={logout} uid={uid} token={token} role={role} />
+            </PrivateRouter>}>
+            </Route>
+            <Route path="/Message" element={<PrivateRouter>
+              <MessageBox logout={logout} />
+            </PrivateRouter>}>
+            </Route>
+
             <Route path="/Login" element={<Login setToken={setToken} setUid={setUid} setRole={setRole} />}></Route>
             <Route path="/Regist" element={<Regist setToken={setToken} setUid={setUid} setRole={setRole} />}></Route>
             <Route path="/UserDashboard" element={<PrivateRouterUser>
               <UserDashboard uid={uid} token={token} logout={logout} />
             </PrivateRouterUser>}>
             </Route>
-            <Route path="/Message" element={<PrivateRouterUser>
-              <MessageBox logout={logout} />
-            </PrivateRouterUser>}>
-            </Route>
             <Route path="/JobMarket" element={<PrivateRouterUser>
               <JobMarket logout={logout} uid={uid} token={token} />
-            </PrivateRouterUser>}>
-            </Route>
-            <Route path="/PostMoment" element={<PrivateRouterUser>
-              <PostMoment logout={logout} uid={uid} token={token} role={role} />
             </PrivateRouterUser>}>
             </Route>
             <Route path="/JobTrack" element={<PrivateRouterUser>
               <JobTrack logout={logout} uid={uid} token={token} />
             </PrivateRouterUser>}>
             </Route>
+            <Route path="/IndividualProfile" element={<PrivateRouterUser>
+              <IndividualProfile logout={logout} uid={uid} token={token} />
+            </PrivateRouterUser>}>
+            </Route>
+            <Route path="/AddWork" element={<PrivateRouterUser>
+              <AddWork logout={logout} uid={uid} token={token} />
+            </PrivateRouterUser>}>
+            </Route>
+            <Route path="/UpdateWork" element={<PrivateRouterUser>
+              <UpdateWork logout={logout} uid={uid} token={token} />
+            </PrivateRouterUser>}>
+            </Route>
+            <Route path="/AddStudy" element={<PrivateRouterUser>
+              <AddStudy logout={logout} uid={uid} token={token} />
+            </PrivateRouterUser>}>
+            </Route>
+
             <Route path="/CompanyDashboard" element={<PrivateRouterCompany>
-              <CompanyDashboard logout={logout} />
+              <CompanyDashboard logout={logout} uid={uid} token={token} />
             </PrivateRouterCompany>}>
             </Route>
           </Routes>

@@ -14,7 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 async function userRegist(credentials) {
-    return fetch("http://3.142.51.105:5000/user/register", {
+    return fetch("http://18.117.128.141:5000/user/register", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -53,8 +53,6 @@ export default function Login(props) {
             'confirm_password': confirmPassword,
             'user_type': role
         });
-
-
 
         if (data["code"] == 200) {
             props.setToken(data["data"]["token"]);

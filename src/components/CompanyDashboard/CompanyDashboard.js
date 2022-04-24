@@ -18,24 +18,77 @@ import Divider from '@mui/material/Divider';
 import TopNavBar from "../TopNavBar/TopNavBar";
 import { PropaneSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import Pagination from '@mui/material/Pagination';
 
-
-async function getPosts() {
-    return await fetch("http://localhost:8080/getMoments")
+// Api: moment/list
+async function getPosts(credentials) {
+    return await fetch("http://18.117.128.141:5000/moment/list", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+    })
         .then(res => res.json())
 }
 
-export default function UserDashboard(props) {
+async function getNumberOfPost() {
+    return await fetch("http://18.117.128.141:5000/moment/count", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    }).then(res => res.json())
+}
+
+export default function CompanyDashboard(props) {
     const [posts, setPosts] = useState({ "post": [] });
+    const [numberOfMoment, setNumberOfMoment] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
     let navigate = useNavigate();
 
     useEffect(async () => {
-        const data = await getPosts();
-        setPosts(data);
+        console.log(props.uid);
+        console.log(props.token);
+        const data = await getPosts({
+            "uid": props.uid,
+            "token": props.token,
+            "page": 0,
+            "page_size": 5
+        });
+        setPosts({
+            "post": data["data"]
+        });
     }, []);
+
+    useEffect(async () => {
+        const data = await getNumberOfPost();
+        setNumberOfMoment(data["data"]["num"]);
+    }, [])
+
+    useEffect(() => {
+        setPageNum(Math.ceil(numberOfMoment / 5));
+    }, [numberOfMoment])
+
+    async function clickPagination(event, value) {
+        const data = await getPosts({
+            "uid": props.uid,
+            "token": props.token,
+            "page": (value - 1),
+            "page_size": 5
+        });
+        setPosts({
+            "post": data["data"]
+        });
+    }
 
     function logout() {
         props.logout();
+    }
+
+    function clickAvatar() {
+        navigate("/IndividualProfile");
     }
 
     function handleClickMessageBox() {
@@ -55,7 +108,7 @@ export default function UserDashboard(props) {
     }
 
     let temp = posts["post"].map((item, key) => {
-        return (<Post key={key} posts={item} />);
+        return (<Post key={key} uid={props.uid} token={props.token} posts={item} />);
     });
 
     return (
@@ -69,13 +122,31 @@ export default function UserDashboard(props) {
                     <Grid container justifyContent="center" sx={{ marginTop: 8 }}>
                         <Grid item xs={10} >
                             <Grid container spacing={3}>
+                                {/* left */}
+                                <Grid item xs={9}>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Paper elevation={2}>
+                                                {posts["post"].length > 0 && temp}
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Grid container justifyContent="center">
+                                                <Grid item sx={{ marginTop: "10px", marginBottom: "50px" }}>
+                                                    <Pagination size="large" onChange={clickPagination} count={pageNum} shape="rounded" />
+                                                </Grid>
+
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
                                 {/* left side */}
                                 <Grid item xs={3} >
                                     <Paper elevation={2}>
                                         <Grid container >
                                             <Grid item xs={12} >
                                                 <Grid container justifyContent="center" sx={{ backgroundColor: "#0d47a1" }}>
-                                                    <Avatar sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>ZZH</Avatar>
+                                                    <Avatar sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>{props.uid}</Avatar>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>
@@ -84,13 +155,13 @@ export default function UserDashboard(props) {
                                                         <ListItemIcon>
                                                             <DraftsIcon />
                                                         </ListItemIcon>
-                                                        <ListItemText>Message Box</ListItemText>
+                                                        <ListItemText>Job list</ListItemText>
                                                     </MenuItem>
                                                     <MenuItem onClick={handleClickJobMarket}>
                                                         <ListItemIcon>
                                                             <StoreIcon />
                                                         </ListItemIcon>
-                                                        <ListItemText>Job Market</ListItemText>
+                                                        <ListItemText>Job Post</ListItemText>
                                                     </MenuItem>
                                                     <MenuItem onClick={handleClickPostMoment}>
                                                         <ListItemIcon>
@@ -98,78 +169,10 @@ export default function UserDashboard(props) {
                                                         </ListItemIcon>
                                                         <ListItemText>Post Moment</ListItemText>
                                                     </MenuItem>
-                                                    <MenuItem onClick={handleClickJobTrack}>
-                                                        <ListItemIcon>
-                                                            <TrackChangesIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>Job Track</ListItemText>
-                                                    </MenuItem>
                                                 </MenuList>
                                             </Grid>
 
                                         </Grid>
-                                    </Paper>
-                                </Grid>
-                                {/* middle */}
-                                <Grid item xs={6}>
-                                    <Paper elevation={2}>
-                                        {posts["post"].length > 0 && temp}
-                                    </Paper>
-                                </Grid>
-                                {/* right side */}
-                                <Grid item xs={3}>
-                                    <Paper elevation={2}>
-                                        <Card sx={{ marginBottom: 2 }}>
-                                            <CardHeader title="People" />
-                                            <Divider />
-                                            <CardContent>
-                                                <List>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                </List>
-                                            </CardContent>
-
-                                        </Card>
-
-                                        <Card>
-                                            <CardHeader title="Company" />
-                                            <Divider />
-                                            <CardContent>
-                                                <List>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                </List>
-                                            </CardContent>
-
-                                        </Card>
                                     </Paper>
                                 </Grid>
                             </Grid>

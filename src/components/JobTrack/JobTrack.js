@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 async function getJobLists(content) {
-    return await fetch("http://3.142.51.105:5000/jobs/search", {
+    return await fetch("http://18.117.128.141:5000/jobs/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

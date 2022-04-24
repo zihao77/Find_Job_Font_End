@@ -22,7 +22,7 @@ import Pagination from '@mui/material/Pagination';
 
 // Api: moment/list
 async function getPosts(credentials) {
-    return await fetch("http://3.142.51.105:5000/moment/list", {
+    return await fetch("http://18.117.128.141:5000/moment/list", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -33,7 +33,7 @@ async function getPosts(credentials) {
 }
 
 async function getNumberOfPost() {
-    return await fetch("http://3.142.51.105:5000/moment/count", {
+    return await fetch("http://18.117.128.141:5000/moment/count", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -87,6 +87,10 @@ export default function UserDashboard(props) {
         props.logout();
     }
 
+    function clickAvatar() {
+        navigate("/IndividualProfile");
+    }
+
     function handleClickMessageBox() {
         navigate('/Message');
     }
@@ -124,7 +128,7 @@ export default function UserDashboard(props) {
                                         <Grid container >
                                             <Grid item xs={12} >
                                                 <Grid container justifyContent="center" sx={{ backgroundColor: "#0d47a1" }}>
-                                                    <Avatar sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>ZZH</Avatar>
+                                                    <Avatar onClick={clickAvatar} sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>ZZH</Avatar>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>

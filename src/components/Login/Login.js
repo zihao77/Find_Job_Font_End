@@ -10,7 +10,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Link as MaterialLink } from "@mui/material";
 
 async function userLogin(credentials) {
-    return fetch("http://3.142.51.105:5000/user/login", {
+    return fetch("http://18.117.128.141:5000/user/login", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

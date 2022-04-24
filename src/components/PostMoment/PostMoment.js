@@ -7,7 +7,7 @@ import { CardActions } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 
 async function postMoment(content) {
-    return fetch("http://3.142.51.105:5000/moment/post", {
+    return fetch("http://18.117.128.141:5000/moment/post", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

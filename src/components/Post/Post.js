@@ -31,7 +31,7 @@ const ExpandMore = styled((props) => {
 }));
 
 async function postComment(content) {
-    return fetch("http://3.142.51.105:5000/moment/comment", {
+    return fetch("http://18.117.128.141:5000/moment/comment", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
