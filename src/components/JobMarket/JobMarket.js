@@ -82,7 +82,6 @@ export default function (props) {
             "liked": "false",
             "applied": "false"
         });
-        console.log(data);
         setJobs({
             "data": data["data"]
         });

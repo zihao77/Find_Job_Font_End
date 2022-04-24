@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { Grid } from "@mui/material";
 import TopNavBar from "../TopNavBar/TopNavBar";
 import Accordion from '@mui/material/Accordion';
@@ -8,8 +8,8 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-async function getMessageList(content) {
-    return await fetch("http://18.117.128.141:5000/message/list", {
+async function getApplicantList(content) {
+    return await fetch("http://18.117.128.141:5000/application/list", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ async function getMessageList(content) {
         .then(res => res.json())
 }
 
-function Message(props) {
+function Applicant(props) {
     return (
         <Accordion>
             <AccordionSummary
@@ -28,49 +28,53 @@ function Message(props) {
                 id="panel1a-header"
             >
                 <Typography>
-                    User: {props.item.from_uid}
+                    User:
+                    {/* {props.item.from_uid} */}
                     <Typography variant="caption" sx={{ color: "gray", marginLeft: 1 }}>
-                        {props.item.date}
+                        {/* {props.item.date} */}
                     </Typography>
                 </Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Typography>
-                    {props.item.content}
+                    {/* {props.item.content} */}
                 </Typography>
             </AccordionDetails>
         </Accordion>
     );
 }
 
+export default function ApplicantList(props) {
+    const [applicantList, setApplicantList] = useState({ "data": [] });
+    const [jid, setJid] = useState("");
+    let { state } = useLocation();
 
-export default function (props) {
-    const [messageList, setMessageList] = useState({ "data": [] });
-    let navigate = useNavigate();
+    useEffect(() => {
+        let { jid } = state;
+        setJid(jid);
+    }, [])
 
     useEffect(async () => {
-        let data = await getMessageList({
+        let data = await getApplicantList({
             "uid": props.uid,
             "token": props.token,
-            "peer_uid": "",
-            "read": 0
-        });
-
+            "jid": jid
+        })
+        console.log(data);
+        console.log(111111111)
         if (data["code"] == 200) {
-            if (JSON.stringify(data["data"]) != '{}') {
-                setMessageList({ "data": data["data"] });
-            }
+            setApplicantList({
+                "data": data["data"]
+            })
         } else {
-            alert("Get message list fail!");
+            alert("Get applicant List fail!");
         }
-    }, []);
-
-    const messages = messageList.data.map((item, key) => {
-        return (<Message key={key} item={item} />);
     })
 
+    const applicants = applicantList.data.map((item, key) => {
+        return (<Applicant key={key} item={item} />);
+    })
     return (
-
         <div>
             <Grid container>
                 <Grid item xs={12}>
@@ -79,7 +83,7 @@ export default function (props) {
                 <Grid item xs={12}>
                     <Grid container justifyContent="center">
                         <Grid item xs={8} sx={{ marginTop: 8 }}>
-                            {messages}
+                            {applicants}
                         </Grid>
                     </Grid>
                 </Grid>

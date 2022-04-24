@@ -87,24 +87,24 @@ export default function CompanyDashboard(props) {
         props.logout();
     }
 
-    function clickAvatar() {
-        navigate("/IndividualProfile");
-    }
+    // function clickAvatar() {
+    //     navigate("/IndividualProfile");
+    // }
 
     function handleClickMessageBox() {
         navigate('/Message');
     }
 
-    function handleClickJobMarket() {
-        navigate('/JobMarket');
+    function handleClickJobPublish() {
+        navigate('/JobPublish');
     }
 
     function handleClickPostMoment() {
         navigate('/PostMoment');
     }
 
-    function handleClickJobTrack() {
-        navigate('/JobTrack');
+    function handleClickJobList() {
+        navigate('/JobList');
     }
 
     let temp = posts["post"].map((item, key) => {
@@ -140,13 +140,13 @@ export default function CompanyDashboard(props) {
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                {/* left side */}
+                                {/* right side */}
                                 <Grid item xs={3} >
                                     <Paper elevation={2}>
                                         <Grid container >
                                             <Grid item xs={12} >
-                                                <Grid container justifyContent="center" sx={{ backgroundColor: "#0d47a1" }}>
-                                                    <Avatar sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>{props.uid}</Avatar>
+                                                <Grid container justifyContent="center" sx={{ backgroundColor: "black" }}>
+                                                    <Avatar sx={{ bgcolor: "gray", marginTop: 5, marginBottom: 5 }}>{props.uid}</Avatar>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>
@@ -155,19 +155,25 @@ export default function CompanyDashboard(props) {
                                                         <ListItemIcon>
                                                             <DraftsIcon />
                                                         </ListItemIcon>
-                                                        <ListItemText>Job list</ListItemText>
-                                                    </MenuItem>
-                                                    <MenuItem onClick={handleClickJobMarket}>
-                                                        <ListItemIcon>
-                                                            <StoreIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>Job Post</ListItemText>
+                                                        <ListItemText>Message Box</ListItemText>
                                                     </MenuItem>
                                                     <MenuItem onClick={handleClickPostMoment}>
                                                         <ListItemIcon>
                                                             <SignpostIcon />
                                                         </ListItemIcon>
                                                         <ListItemText>Post Moment</ListItemText>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={handleClickJobPublish}>
+                                                        <ListItemIcon>
+                                                            <StoreIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText>Job Publish</ListItemText>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={handleClickJobList}>
+                                                        <ListItemIcon>
+                                                            <TrackChangesIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText>Job List</ListItemText>
                                                     </MenuItem>
                                                 </MenuList>
                                             </Grid>

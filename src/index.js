@@ -14,6 +14,9 @@ import IndividualProfile from './components/IndividualProfile/IndividualProfile'
 import AddWork from './components/Experience/AddWork';
 import UpdateWork from './components/Experience/UpdateWork';
 import AddStudy from './components/Experience/AddStudy';
+import JobPublish from './components/JobPublish/JobPublish';
+import JobList from './components/JobList/JobList';
+import ApplicantList from './components/ApplicantList/ApplicantList';
 
 const AuthContext = React.createContext(null);
 
@@ -157,7 +160,7 @@ function App() {
             </PrivateRouter>}>
             </Route>
             <Route path="/Message" element={<PrivateRouter>
-              <MessageBox logout={logout} />
+              <MessageBox logout={logout} uid={uid} token={token} />
             </PrivateRouter>}>
             </Route>
 
@@ -194,6 +197,18 @@ function App() {
 
             <Route path="/CompanyDashboard" element={<PrivateRouterCompany>
               <CompanyDashboard logout={logout} uid={uid} token={token} />
+            </PrivateRouterCompany>}>
+            </Route>
+            <Route path="/JobPublish" element={<PrivateRouterCompany>
+              <JobPublish logout={logout} uid={uid} token={token} />
+            </PrivateRouterCompany>}>
+            </Route>
+            <Route path="/JobList" element={<PrivateRouterCompany>
+              <JobList logout={logout} uid={uid} token={token} />
+            </PrivateRouterCompany>}>
+            </Route>
+            <Route path="/ApplicantList" element={<PrivateRouterCompany>
+              <ApplicantList logout={logout} uid={uid} token={token} />
             </PrivateRouterCompany>}>
             </Route>
           </Routes>

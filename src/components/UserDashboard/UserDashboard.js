@@ -42,15 +42,61 @@ async function getNumberOfPost() {
     }).then(res => res.json())
 }
 
+async function getUnfollowed(content) {
+    return await fetch('http://18.117.128.141:5000/user/follow/unfollowed/individual/list', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(content)
+    }).then(res => res.json())
+}
+
+async function getFollowed(content) {
+    return await fetch('http://18.117.128.141:5000/user/follow/individual/list', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(content)
+    }).then(res => res.json())
+}
+
+function UnfollowedUser(props) {
+    return (
+        <ListItem>
+            <ListItemIcon>
+                <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText >
+                {(props.item.name == "") ? "Guest" : props.item.name}
+            </ListItemText>
+        </ListItem>
+    );
+}
+
+function FollowedUser(props) {
+    return (
+        <ListItem>
+            <ListItemIcon>
+                <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText >
+                {(props.item.name == "") ? "Guest" : props.item.name}
+            </ListItemText>
+        </ListItem>
+    );
+}
+
 export default function UserDashboard(props) {
     const [posts, setPosts] = useState({ "post": [] });
     const [numberOfMoment, setNumberOfMoment] = useState(0);
     const [pageNum, setPageNum] = useState(0);
+    const [unfollowedList, setUnfollowedList] = useState({ "data": [] });
+    const [followedList, setFollowedList] = useState({ "data": [] });
     let navigate = useNavigate();
 
     useEffect(async () => {
-        console.log(props.uid);
-        console.log(props.token);
         const data = await getPosts({
             "uid": props.uid,
             "token": props.token,
@@ -70,6 +116,37 @@ export default function UserDashboard(props) {
     useEffect(() => {
         setPageNum(Math.ceil(numberOfMoment / 5));
     }, [numberOfMoment])
+
+    useEffect(async () => {
+        let data = await getUnfollowed({
+            "uid": props.uid,
+            "token": props.token
+        });
+        if (data["code"] == 200) {
+            setUnfollowedList({
+                "data": data["data"]
+            })
+        } else {
+            alert("get unfollowed user fail!");
+        }
+
+    }, [])
+
+    useEffect(async () => {
+        let data = await getFollowed({
+            "uid": props.uid,
+            "token": props.token
+        });
+        if (data["code"] == 200) {
+            if (JSON.stringify(data["data"]) != "{}") {
+                setFollowedList({
+                    "data": data["data"]
+                })
+            }
+        } else {
+            alert("get followed user fail!");
+        }
+    }, [])
 
     async function clickPagination(event, value) {
         const data = await getPosts({
@@ -111,6 +188,14 @@ export default function UserDashboard(props) {
         return (<Post key={key} uid={props.uid} token={props.token} posts={item} />);
     });
 
+    let unfollowedUserList = unfollowedList["data"].map((item, key) => {
+        return (<UnfollowedUser key={key} uid={props.uid} token={props.token} item={item} />);
+    })
+
+    let followedUserList = followedList["data"].map((item, key) => {
+        return (<FollowedUser key={key} uid={props.uid} token={props.token} item={item} />);
+    })
+
     return (
         <div>
 
@@ -128,7 +213,7 @@ export default function UserDashboard(props) {
                                         <Grid container >
                                             <Grid item xs={12} >
                                                 <Grid container justifyContent="center" sx={{ backgroundColor: "#0d47a1" }}>
-                                                    <Avatar onClick={clickAvatar} sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>ZZH</Avatar>
+                                                    <Avatar onClick={clickAvatar} sx={{ bgcolor: "#aeafa1", marginTop: 5, marginBottom: 5 }}>{props.uid}</Avatar>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>
@@ -187,52 +272,22 @@ export default function UserDashboard(props) {
                                 <Grid item xs={3}>
                                     <Paper elevation={2}>
                                         <Card sx={{ marginBottom: 2 }}>
-                                            <CardHeader title="People" />
+                                            <CardHeader title="Follow People" />
                                             <Divider />
                                             <CardContent>
                                                 <List>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
+                                                    {followedUserList}
                                                 </List>
                                             </CardContent>
 
                                         </Card>
 
                                         <Card>
-                                            <CardHeader title="Company" />
+                                            <CardHeader title="Explore User" />
                                             <Divider />
                                             <CardContent>
                                                 <List>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                    <ListItem>
-                                                        <ListItemIcon>
-                                                            <AccountCircleIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText>
-                                                            Jack
-                                                        </ListItemText>
-                                                    </ListItem>
+                                                    {unfollowedUserList}
                                                 </List>
                                             </CardContent>
 
